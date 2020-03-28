@@ -1,6 +1,7 @@
 package com.example.shellencrypt;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -40,12 +41,24 @@ public class MyClass {
             if(!assets.exists()) {
                 assets.mkdir();
             }
-            File classdex = new File(tmpFolder, "classes.dex");
-            File encDex = new File(assets, "encrypt");
-            System.out.println("start to encrypt classes.dex to assets/encrypt");
-            FileManager.copyFile(classdex.getAbsolutePath(), encDex.getAbsolutePath(),
-                    MyClass.class.getDeclaredMethod("encrypt", byte[].class));
-            FileManager.deleteFile(classdex);
+
+            File[] dexFiles = tmpFolder.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    if (name.endsWith(".dex")) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            for(File dexfile:dexFiles) {
+                File encDex = new File(assets, dexfile.getName() + "encrypt");
+                System.out.println("start to encrypt [" + dexfile.getName() + "]...");
+                FileManager.copyFile(dexfile.getAbsolutePath(), encDex.getAbsolutePath(),
+                        MyClass.class.getDeclaredMethod("encrypt", byte[].class));
+                FileManager.deleteFile(dexfile);
+            }
+
 
             /**
              * 2.插入smali代码到smali中（smali代码为反编译后的壳dex）

@@ -25,7 +25,7 @@
 .method static constructor <clinit>()V
     .locals 2
 
-    .line 28
+    .line 29
     const-string v0, "android.permission.READ_EXTERNAL_STORAGE"
 
     const-string v1, "android.permission.WRITE_EXTERNAL_STORAGE"
@@ -42,21 +42,21 @@
 .method public constructor <init>()V
     .locals 1
 
-    .line 24
+    .line 25
     invoke-direct {p0}, Landroid/app/Application;-><init>()V
 
-    .line 35
+    .line 36
     const/4 v0, 0x0
 
     iput-object v0, p0, Lcom/example/protectappnative/ProxyApplication;->cachePath:Ljava/lang/String;
 
-    .line 36
+    .line 37
     iput-object v0, p0, Lcom/example/protectappnative/ProxyApplication;->odexPath:Ljava/lang/String;
 
-    .line 37
+    .line 38
     iput-object v0, p0, Lcom/example/protectappnative/ProxyApplication;->libPath:Ljava/lang/String;
 
-    .line 38
+    .line 39
     iput-object v0, p0, Lcom/example/protectappnative/ProxyApplication;->srcDex:Ljava/lang/String;
 
     return-void
@@ -66,21 +66,21 @@
     .locals 2
     .param p0, "enc"    # [B
 
-    .line 224
+    .line 265
     const-string v0, "hello"
 
     const-string v1, "decrypt dex file."
 
     invoke-static {v0, v1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
 
-    .line 225
+    .line 266
     invoke-static {}, Lcom/example/protectappnative/ProxyApplication;->getPassword()Ljava/lang/String;
 
     move-result-object v0
 
     invoke-static {v0}, Lcom/example/protectappnative/AESUtil;->init(Ljava/lang/String;)V
 
-    .line 226
+    .line 267
     invoke-static {p0}, Lcom/example/protectappnative/AESUtil;->decrypt([B)[B
 
     move-result-object v0
@@ -91,7 +91,7 @@
 .method private static getPassword()Ljava/lang/String;
     .locals 1
 
-    .line 230
+    .line 271
     const-string v0, "1122334455667788"
 
     return-object v0
@@ -101,7 +101,7 @@
     .locals 3
     .param p0, "activity"    # Landroid/app/Activity;
 
-    .line 237
+    .line 278
     :try_start_0
     const-string v0, "android.permission.WRITE_EXTERNAL_STORAGE"
 
@@ -109,11 +109,11 @@
 
     move-result v0
 
-    .line 239
+    .line 280
     .local v0, "permission":I
     if-eqz v0, :cond_0
 
-    .line 241
+    .line 282
     sget-object v1, Lcom/example/protectappnative/ProxyApplication;->PERMISSIONS_STORAGE:[Ljava/lang/String;
 
     const/4 v2, 0x1
@@ -122,20 +122,20 @@
     :try_end_0
     .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
 
-    .line 245
+    .line 286
     .end local v0    # "permission":I
     :cond_0
     goto :goto_0
 
-    .line 243
+    .line 284
     :catch_0
     move-exception v0
 
-    .line 244
+    .line 285
     .local v0, "e":Ljava/lang/Exception;
     invoke-virtual {v0}, Ljava/lang/Exception;->printStackTrace()V
 
-    .line 246
+    .line 287
     .end local v0    # "e":Ljava/lang/Exception;
     :goto_0
     return-void
@@ -144,253 +144,409 @@
 
 # virtual methods
 .method protected attachBaseContext(Landroid/content/Context;)V
-    .locals 13
+    .locals 16
     .param p1, "base"    # Landroid/content/Context;
 
-    .line 175
+    .line 186
+    move-object/from16 v1, p0
+
     const-string v0, "mClassLoader"
 
-    const-string v1, "android.app.LoadedApk"
+    const-string v2, "android.app.LoadedApk"
 
-    const-string v2, "android.app.ActivityThread"
+    const-string v3, "android.app.ActivityThread"
 
-    invoke-super {p0, p1}, Landroid/app/Application;->attachBaseContext(Landroid/content/Context;)V
+    const-string v4, ""
 
-    .line 179
+    invoke-super/range {p0 .. p1}, Landroid/app/Application;->attachBaseContext(Landroid/content/Context;)V
+
+    .line 190
     :try_start_0
-    const-string v3, ".fshell"
+    const-string v5, ".fshell"
 
-    const/4 v4, 0x0
+    const/4 v6, 0x0
 
-    invoke-virtual {p0, v3, v4}, Lcom/example/protectappnative/ProxyApplication;->getDir(Ljava/lang/String;I)Ljava/io/File;
-
-    move-result-object v3
-
-    .line 180
-    .local v3, "cache":Ljava/io/File;
-    const-string v5, ".fodex"
-
-    invoke-virtual {p0, v5, v4}, Lcom/example/protectappnative/ProxyApplication;->getDir(Ljava/lang/String;I)Ljava/io/File;
+    invoke-virtual {v1, v5, v6}, Lcom/example/protectappnative/ProxyApplication;->getDir(Ljava/lang/String;I)Ljava/io/File;
 
     move-result-object v5
 
+    .line 191
+    .local v5, "cache":Ljava/io/File;
+    const-string v7, ".fodex"
+
+    invoke-virtual {v1, v7, v6}, Lcom/example/protectappnative/ProxyApplication;->getDir(Ljava/lang/String;I)Ljava/io/File;
+
+    move-result-object v7
+
+    invoke-virtual {v7}, Ljava/io/File;->getAbsolutePath()Ljava/lang/String;
+
+    move-result-object v7
+
+    iput-object v7, v1, Lcom/example/protectappnative/ProxyApplication;->odexPath:Ljava/lang/String;
+
+    .line 192
     invoke-virtual {v5}, Ljava/io/File;->getAbsolutePath()Ljava/lang/String;
 
-    move-result-object v5
+    move-result-object v7
 
-    iput-object v5, p0, Lcom/example/protectappnative/ProxyApplication;->odexPath:Ljava/lang/String;
+    iput-object v7, v1, Lcom/example/protectappnative/ProxyApplication;->cachePath:Ljava/lang/String;
 
-    .line 181
-    invoke-virtual {v3}, Ljava/io/File;->getAbsolutePath()Ljava/lang/String;
-
-    move-result-object v5
-
-    iput-object v5, p0, Lcom/example/protectappnative/ProxyApplication;->cachePath:Ljava/lang/String;
-
-    .line 182
-    invoke-virtual {p0}, Lcom/example/protectappnative/ProxyApplication;->getApplicationInfo()Landroid/content/pm/ApplicationInfo;
-
-    move-result-object v5
-
-    iget-object v5, v5, Landroid/content/pm/ApplicationInfo;->nativeLibraryDir:Ljava/lang/String;
-
-    iput-object v5, p0, Lcom/example/protectappnative/ProxyApplication;->libPath:Ljava/lang/String;
-
-    .line 183
-    new-instance v5, Ljava/lang/StringBuilder;
-
-    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
-
-    iget-object v6, p0, Lcom/example/protectappnative/ProxyApplication;->cachePath:Ljava/lang/String;
-
-    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    const-string v6, "/decrypt.dex"
-
-    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-
-    invoke-virtual {v5}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
-
-    move-result-object v5
-
-    iput-object v5, p0, Lcom/example/protectappnative/ProxyApplication;->srcDex:Ljava/lang/String;
-
-    .line 184
-    const-string v6, "encrypt"
-
-    invoke-virtual {p0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+    .line 193
+    invoke-virtual/range {p0 .. p0}, Lcom/example/protectappnative/ProxyApplication;->getApplicationInfo()Landroid/content/pm/ApplicationInfo;
 
     move-result-object v7
 
-    const-string v8, "decMethod"
+    iget-object v7, v7, Landroid/content/pm/ApplicationInfo;->nativeLibraryDir:Ljava/lang/String;
 
-    const/4 v9, 0x1
+    iput-object v7, v1, Lcom/example/protectappnative/ProxyApplication;->libPath:Ljava/lang/String;
 
-    new-array v9, v9, [Ljava/lang/Class;
-
-    const-class v10, [B
-
-    aput-object v10, v9, v4
-
-    invoke-virtual {v7, v8, v9}, Ljava/lang/Class;->getDeclaredMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+    .line 196
+    invoke-virtual/range {p1 .. p1}, Landroid/content/Context;->getAssets()Landroid/content/res/AssetManager;
 
     move-result-object v7
 
-    invoke-static {p0, v6, v5, v7}, Lcom/example/protectappnative/FileManager;->releaseAssetsFile(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Ljava/lang/reflect/Method;)Ljava/io/File;
+    invoke-virtual {v7, v4}, Landroid/content/res/AssetManager;->list(Ljava/lang/String;)[Ljava/lang/String;
 
-    move-result-object v5
+    move-result-object v7
 
-    .line 185
-    .local v5, "decFile":Ljava/io/File;
-    invoke-virtual {v5}, Ljava/io/File;->exists()Z
+    .line 197
+    .local v7, "fileNames":[Ljava/lang/String;
+    array-length v8, v7
 
-    move-result v6
+    const/4 v9, 0x0
 
-    if-nez v6, :cond_0
+    :goto_0
+    const/4 v10, 0x1
 
-    .line 186
-    invoke-virtual {v5}, Ljava/io/File;->createNewFile()Z
+    if-ge v9, v8, :cond_1
 
-    .line 189
-    :cond_0
-    const-string v6, "currentActivityThread"
+    aget-object v11, v7, v9
 
-    new-array v7, v4, [Ljava/lang/Class;
+    .line 198
+    .local v11, "filename":Ljava/lang/String;
+    const-string v12, ".dexencrypt"
 
-    new-array v4, v4, [Ljava/lang/Object;
+    invoke-virtual {v11, v12}, Ljava/lang/String;->endsWith(Ljava/lang/String;)Z
 
-    invoke-static {v2, v6, v7, v4}, Lcom/example/protectappnative/RefInvoke;->invokeStaticMethod(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/Object;
+    move-result v12
 
-    move-result-object v4
+    if-eqz v12, :cond_0
 
     .line 199
-    .local v4, "currentActivityThread":Ljava/lang/Object;
-    invoke-virtual {p0}, Lcom/example/protectappnative/ProxyApplication;->getPackageName()Ljava/lang/String;
+    new-instance v12, Ljava/lang/StringBuilder;
+
+    invoke-direct {v12}, Ljava/lang/StringBuilder;-><init>()V
+
+    iget-object v13, v1, Lcom/example/protectappnative/ProxyApplication;->cachePath:Ljava/lang/String;
+
+    invoke-virtual {v12, v13}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    const-string v13, "/"
+
+    invoke-virtual {v12, v13}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    const-string v13, "encrypt"
+
+    invoke-virtual {v11, v13}, Ljava/lang/String;->lastIndexOf(Ljava/lang/String;)I
+
+    move-result v13
+
+    invoke-virtual {v11, v6, v13}, Ljava/lang/String;->substring(II)Ljava/lang/String;
+
+    move-result-object v13
+
+    invoke-virtual {v12, v13}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v12}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v12
+
+    .line 200
+    .local v12, "decFileName":Ljava/lang/String;
+    invoke-virtual/range {p0 .. p0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
+
+    move-result-object v13
+
+    const-string v14, "decMethod"
+
+    new-array v10, v10, [Ljava/lang/Class;
+
+    const-class v15, [B
+
+    aput-object v15, v10, v6
+
+    invoke-virtual {v13, v14, v10}, Ljava/lang/Class;->getDeclaredMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
+
+    move-result-object v10
+
+    invoke-static {v1, v11, v12, v10}, Lcom/example/protectappnative/FileManager;->releaseAssetsFile(Landroid/content/Context;Ljava/lang/String;Ljava/lang/String;Ljava/lang/reflect/Method;)Ljava/io/File;
+
+    move-result-object v10
+
+    .line 201
+    .local v10, "decFile":Ljava/io/File;
+    invoke-virtual {v10}, Ljava/io/File;->exists()Z
+
+    move-result v13
+
+    if-nez v13, :cond_0
+
+    .line 202
+    invoke-virtual {v10}, Ljava/io/File;->createNewFile()Z
+
+    .line 197
+    .end local v10    # "decFile":Ljava/io/File;
+    .end local v11    # "filename":Ljava/lang/String;
+    .end local v12    # "decFileName":Ljava/lang/String;
+    :cond_0
+    add-int/lit8 v9, v9, 0x1
+
+    goto :goto_0
+
+    .line 207
+    :cond_1
+    const-string v8, "currentActivityThread"
+
+    new-array v9, v6, [Ljava/lang/Class;
+
+    new-array v6, v6, [Ljava/lang/Object;
+
+    invoke-static {v3, v8, v9, v6}, Lcom/example/protectappnative/RefInvoke;->invokeStaticMethod(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/Object;
 
     move-result-object v6
 
-    .line 200
-    .local v6, "packageName":Ljava/lang/String;
-    const-string v7, "mPackages"
+    .line 217
+    .local v6, "currentActivityThread":Ljava/lang/Object;
+    invoke-virtual/range {p0 .. p0}, Lcom/example/protectappnative/ProxyApplication;->getPackageName()Ljava/lang/String;
 
-    invoke-static {v2, v4, v7}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
+    move-result-object v8
 
-    move-result-object v2
+    .line 218
+    .local v8, "packageName":Ljava/lang/String;
+    const-string v9, "mPackages"
 
-    check-cast v2, Landroid/util/ArrayMap;
+    invoke-static {v3, v6, v9}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 
-    .line 204
-    .local v2, "mPackages":Landroid/util/ArrayMap;
-    invoke-virtual {v2, v6}, Landroid/util/ArrayMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
+    move-result-object v3
 
-    move-result-object v7
+    check-cast v3, Landroid/util/ArrayMap;
 
-    check-cast v7, Ljava/lang/ref/WeakReference;
-
-    .line 212
-    .local v7, "wr":Ljava/lang/ref/WeakReference;
-    new-instance v8, Ldalvik/system/DexClassLoader;
-
-    iget-object v9, p0, Lcom/example/protectappnative/ProxyApplication;->srcDex:Ljava/lang/String;
-
-    iget-object v10, p0, Lcom/example/protectappnative/ProxyApplication;->odexPath:Ljava/lang/String;
-
-    iget-object v11, p0, Lcom/example/protectappnative/ProxyApplication;->libPath:Ljava/lang/String;
-
-    .line 213
-    invoke-virtual {v7}, Ljava/lang/ref/WeakReference;->get()Ljava/lang/Object;
-
-    move-result-object v12
-
-    invoke-static {v1, v12, v0}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
-
-    move-result-object v12
-
-    check-cast v12, Ljava/lang/ClassLoader;
-
-    invoke-direct {v8, v9, v10, v11, v12}, Ldalvik/system/DexClassLoader;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V
-
-    .line 215
-    .local v8, "dexClassLoader":Ldalvik/system/DexClassLoader;
-    invoke-virtual {v7}, Ljava/lang/ref/WeakReference;->get()Ljava/lang/Object;
+    .line 222
+    .local v3, "mPackages":Landroid/util/ArrayMap;
+    invoke-virtual {v3, v8}, Landroid/util/ArrayMap;->get(Ljava/lang/Object;)Ljava/lang/Object;
 
     move-result-object v9
 
-    invoke-static {v1, v0, v9, v8}, Lcom/example/protectappnative/RefInvoke;->setFieldObject(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+    check-cast v9, Ljava/lang/ref/WeakReference;
+
+    .line 235
+    .local v9, "wr":Ljava/lang/ref/WeakReference;
+    new-instance v11, Ljava/io/File;
+
+    iget-object v12, v1, Lcom/example/protectappnative/ProxyApplication;->cachePath:Ljava/lang/String;
+
+    invoke-direct {v11, v12}, Ljava/io/File;-><init>(Ljava/lang/String;)V
+
+    .line 236
+    .local v11, "filePath":Ljava/io/File;
+    new-instance v12, Lcom/example/protectappnative/ProxyApplication$1;
+
+    invoke-direct {v12, v1}, Lcom/example/protectappnative/ProxyApplication$1;-><init>(Lcom/example/protectappnative/ProxyApplication;)V
+
+    invoke-virtual {v11, v12}, Ljava/io/File;->listFiles(Ljava/io/FilenameFilter;)[Ljava/io/File;
+
+    move-result-object v12
+
+    .line 245
+    .local v12, "dexFiles":[Ljava/io/File;
+    nop
+
+    .line 246
+    .local v4, "dexPath":Ljava/lang/String;
+    const/4 v13, 0x0
+
+    .local v13, "i":I
+    :goto_1
+    array-length v14, v12
+
+    if-ge v13, v14, :cond_3
+
+    .line 247
+    new-instance v14, Ljava/lang/StringBuilder;
+
+    invoke-direct {v14}, Ljava/lang/StringBuilder;-><init>()V
+
+    invoke-virtual {v14, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    aget-object v15, v12, v13
+
+    invoke-virtual {v15}, Ljava/io/File;->getAbsolutePath()Ljava/lang/String;
+
+    move-result-object v15
+
+    invoke-virtual {v14, v15}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v14}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v14
+
+    move-object v4, v14
+
+    .line 248
+    array-length v14, v12
+
+    sub-int/2addr v14, v10
+
+    if-ge v13, v14, :cond_2
+
+    .line 249
+    new-instance v14, Ljava/lang/StringBuilder;
+
+    invoke-direct {v14}, Ljava/lang/StringBuilder;-><init>()V
+
+    invoke-virtual {v14, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    const-string v15, ":"
+
+    invoke-virtual {v14, v15}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v14}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v14
+
+    move-object v4, v14
+
+    .line 246
+    :cond_2
+    add-int/lit8 v13, v13, 0x1
+
+    goto :goto_1
+
+    .line 252
+    .end local v13    # "i":I
+    :cond_3
+    const-string v10, "hello"
+
+    new-instance v13, Ljava/lang/StringBuilder;
+
+    invoke-direct {v13}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string v14, "dexPath:"
+
+    invoke-virtual {v13, v14}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v13, v4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v13}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v13
+
+    invoke-static {v10, v13}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 253
+    new-instance v10, Ldalvik/system/DexClassLoader;
+
+    iget-object v13, v1, Lcom/example/protectappnative/ProxyApplication;->odexPath:Ljava/lang/String;
+
+    iget-object v14, v1, Lcom/example/protectappnative/ProxyApplication;->libPath:Ljava/lang/String;
+
+    .line 254
+    invoke-virtual {v9}, Ljava/lang/ref/WeakReference;->get()Ljava/lang/Object;
+
+    move-result-object v15
+
+    invoke-static {v2, v15, v0}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
+
+    move-result-object v15
+
+    check-cast v15, Ljava/lang/ClassLoader;
+
+    invoke-direct {v10, v4, v13, v14, v15}, Ldalvik/system/DexClassLoader;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V
+
+    .line 256
+    .local v10, "dexClassLoader":Ldalvik/system/DexClassLoader;
+    invoke-virtual {v9}, Ljava/lang/ref/WeakReference;->get()Ljava/lang/Object;
+
+    move-result-object v13
+
+    invoke-static {v2, v0, v13, v10}, Lcom/example/protectappnative/RefInvoke;->setFieldObject(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
     :try_end_0
     .catch Ljava/lang/NoSuchMethodException; {:try_start_0 .. :try_end_0} :catch_1
     .catch Ljava/io/IOException; {:try_start_0 .. :try_end_0} :catch_0
 
-    .end local v2    # "mPackages":Landroid/util/ArrayMap;
-    .end local v3    # "cache":Ljava/io/File;
-    .end local v4    # "currentActivityThread":Ljava/lang/Object;
-    .end local v5    # "decFile":Ljava/io/File;
-    .end local v6    # "packageName":Ljava/lang/String;
-    .end local v7    # "wr":Ljava/lang/ref/WeakReference;
-    .end local v8    # "dexClassLoader":Ldalvik/system/DexClassLoader;
-    goto :goto_0
+    .end local v3    # "mPackages":Landroid/util/ArrayMap;
+    .end local v4    # "dexPath":Ljava/lang/String;
+    .end local v5    # "cache":Ljava/io/File;
+    .end local v6    # "currentActivityThread":Ljava/lang/Object;
+    .end local v7    # "fileNames":[Ljava/lang/String;
+    .end local v8    # "packageName":Ljava/lang/String;
+    .end local v9    # "wr":Ljava/lang/ref/WeakReference;
+    .end local v10    # "dexClassLoader":Ldalvik/system/DexClassLoader;
+    .end local v11    # "filePath":Ljava/io/File;
+    .end local v12    # "dexFiles":[Ljava/io/File;
+    goto :goto_2
 
-    .line 218
+    .line 259
     :catch_0
     move-exception v0
 
-    .line 219
+    .line 260
     .local v0, "e":Ljava/io/IOException;
     invoke-virtual {v0}, Ljava/io/IOException;->printStackTrace()V
 
-    goto :goto_1
+    goto :goto_3
 
-    .line 216
+    .line 257
     .end local v0    # "e":Ljava/io/IOException;
     :catch_1
     move-exception v0
 
-    .line 217
+    .line 258
     .local v0, "e":Ljava/lang/NoSuchMethodException;
     invoke-virtual {v0}, Ljava/lang/NoSuchMethodException;->printStackTrace()V
 
-    .line 220
+    .line 261
     .end local v0    # "e":Ljava/lang/NoSuchMethodException;
-    :goto_0
+    :goto_2
     nop
 
-    .line 221
-    :goto_1
+    .line 262
+    :goto_3
     return-void
 .end method
 
 .method public onCreate()V
     .locals 17
 
-    .line 42
+    .line 43
     const-string v0, "APPLICATION_CLASS_NAME"
 
     const/4 v1, 0x0
 
-    .line 44
+    .line 45
     .local v1, "appClassName":Ljava/lang/String;
     :try_start_0
     invoke-virtual/range {p0 .. p0}, Lcom/example/protectappnative/ProxyApplication;->getPackageManager()Landroid/content/pm/PackageManager;
 
     move-result-object v2
 
-    .line 45
+    .line 46
     invoke-virtual/range {p0 .. p0}, Lcom/example/protectappnative/ProxyApplication;->getPackageName()Ljava/lang/String;
 
     move-result-object v3
 
     const/16 v4, 0x80
 
-    .line 44
+    .line 45
     invoke-virtual {v2, v3, v4}, Landroid/content/pm/PackageManager;->getApplicationInfo(Ljava/lang/String;I)Landroid/content/pm/ApplicationInfo;
 
     move-result-object v2
 
-    .line 47
+    .line 48
     .local v2, "applicationInfo":Landroid/content/pm/ApplicationInfo;
     iget-object v3, v2, Landroid/content/pm/ApplicationInfo;->metaData:Landroid/os/Bundle;
 
-    .line 48
+    .line 49
     .local v3, "metaData":Landroid/os/Bundle;
     if-eqz v3, :cond_0
 
@@ -400,7 +556,7 @@
 
     if-eqz v4, :cond_0
 
-    .line 49
+    .line 50
     invoke-virtual {v3, v0}, Landroid/os/Bundle;->getString(Ljava/lang/String;)Ljava/lang/String;
 
     move-result-object v0
@@ -409,21 +565,21 @@
 
     move-object v1, v0
 
-    .line 53
+    .line 54
     .end local v2    # "applicationInfo":Landroid/content/pm/ApplicationInfo;
     .end local v3    # "metaData":Landroid/os/Bundle;
     :cond_0
     goto :goto_0
 
-    .line 51
+    .line 52
     :catch_0
     move-exception v0
 
-    .line 52
+    .line 53
     .local v0, "e":Landroid/content/pm/PackageManager$NameNotFoundException;
     invoke-virtual {v0}, Landroid/content/pm/PackageManager$NameNotFoundException;->printStackTrace()V
 
-    .line 61
+    .line 62
     .end local v0    # "e":Landroid/content/pm/PackageManager$NameNotFoundException;
     :goto_0
     const/4 v0, 0x0
@@ -440,7 +596,7 @@
 
     move-result-object v2
 
-    .line 67
+    .line 68
     .local v2, "currentActivityThread":Ljava/lang/Object;
     const-string v3, "mBoundApplication"
 
@@ -448,7 +604,7 @@
 
     move-result-object v3
 
-    .line 82
+    .line 83
     .local v3, "mBoundApplication":Ljava/lang/Object;
     const-string v5, "android.app.ActivityThread$AppBindData"
 
@@ -458,7 +614,7 @@
 
     move-result-object v6
 
-    .line 88
+    .line 89
     .local v6, "loadedApkInfo":Ljava/lang/Object;
     const/4 v7, 0x0
 
@@ -468,54 +624,62 @@
 
     invoke-static {v8, v9, v6, v7}, Lcom/example/protectappnative/RefInvoke;->setFieldObject(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
 
-    .line 96
-    const-string v9, "mInitialApplication"
+    .line 97
+    const-string v7, "mInitialApplication"
 
-    invoke-static {v4, v2, v9}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
+    invoke-static {v4, v2, v7}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
+
+    move-result-object v9
+
+    .line 103
+    .local v9, "oldApplication":Ljava/lang/Object;
+    const-string v10, "mAllApplications"
+
+    invoke-static {v4, v2, v10}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 
     move-result-object v10
 
-    .line 102
-    .local v10, "oldApplication":Ljava/lang/Object;
-    const-string v11, "mAllApplications"
+    check-cast v10, Ljava/util/ArrayList;
 
-    invoke-static {v4, v2, v11}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
+    .line 108
+    .local v10, "mAllApplications":Ljava/util/ArrayList;, "Ljava/util/ArrayList<Landroid/app/Application;>;"
+    invoke-virtual {v10, v9}, Ljava/util/ArrayList;->remove(Ljava/lang/Object;)Z
+
+    .line 111
+    const-string v11, "mApplicationInfo"
+
+    invoke-static {v8, v6, v11}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 
     move-result-object v11
 
-    check-cast v11, Ljava/util/ArrayList;
+    check-cast v11, Landroid/content/pm/ApplicationInfo;
 
-    .line 107
-    .local v11, "mAllApplications":Ljava/util/ArrayList;, "Ljava/util/ArrayList<Landroid/app/Application;>;"
-    invoke-virtual {v11, v10}, Ljava/util/ArrayList;->remove(Ljava/lang/Object;)Z
+    .line 116
+    .local v11, "appInfoInLoadedApk":Landroid/content/pm/ApplicationInfo;
+    const-string v12, "appInfo"
 
-    .line 110
-    const-string v12, "mApplicationInfo"
-
-    invoke-static {v8, v6, v12}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
-
-    move-result-object v12
-
-    check-cast v12, Landroid/content/pm/ApplicationInfo;
-
-    .line 115
-    .local v12, "appInfoInLoadedApk":Landroid/content/pm/ApplicationInfo;
-    const-string v13, "appInfo"
-
-    invoke-static {v5, v3, v13}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
+    invoke-static {v5, v3, v12}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 
     move-result-object v5
 
     check-cast v5, Landroid/content/pm/ApplicationInfo;
 
-    .line 121
-    .local v5, "appInfoInAppBindData":Landroid/content/pm/ApplicationInfo;
-    iput-object v1, v12, Landroid/content/pm/ApplicationInfo;->className:Ljava/lang/String;
-
     .line 122
+    .local v5, "appInfoInAppBindData":Landroid/content/pm/ApplicationInfo;
+    iput-object v1, v11, Landroid/content/pm/ApplicationInfo;->className:Ljava/lang/String;
+
+    .line 123
     iput-object v1, v5, Landroid/content/pm/ApplicationInfo;->className:Ljava/lang/String;
 
-    .line 139
+    .line 145
+    const-string v12, "mInstrumentation"
+
+    invoke-static {v4, v2, v12}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
+
+    move-result-object v12
+
+    .line 150
+    .local v12, "oldInstrumentation":Ljava/lang/Object;
     const/4 v13, 0x2
 
     new-array v14, v13, [Ljava/lang/Class;
@@ -532,16 +696,16 @@
 
     new-array v13, v13, [Ljava/lang/Object;
 
-    .line 144
+    .line 155
     invoke-static {v0}, Ljava/lang/Boolean;->valueOf(Z)Ljava/lang/Boolean;
 
     move-result-object v15
 
     aput-object v15, v13, v0
 
-    aput-object v7, v13, v16
+    aput-object v12, v13, v16
 
-    .line 139
+    .line 150
     const-string v0, "makeApplication"
 
     invoke-static {v8, v0, v6, v14, v13}, Lcom/example/protectappnative/RefInvoke;->invokeMethod(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;[Ljava/lang/Class;[Ljava/lang/Object;)Ljava/lang/Object;
@@ -550,11 +714,11 @@
 
     check-cast v0, Landroid/app/Application;
 
-    .line 146
+    .line 157
     .local v0, "newApp":Landroid/app/Application;
-    invoke-static {v4, v9, v2, v0}, Lcom/example/protectappnative/RefInvoke;->setFieldObject(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+    invoke-static {v4, v7, v2, v0}, Lcom/example/protectappnative/RefInvoke;->setFieldObject(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
 
-    .line 154
+    .line 165
     const-string v7, "mProviderMap"
 
     invoke-static {v4, v2, v7}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
@@ -563,7 +727,7 @@
 
     check-cast v4, Landroid/util/ArrayMap;
 
-    .line 157
+    .line 168
     .local v4, "mProviderMap":Landroid/util/ArrayMap;
     invoke-virtual {v4}, Landroid/util/ArrayMap;->values()Ljava/util/Collection;
 
@@ -573,7 +737,7 @@
 
     move-result-object v7
 
-    .line 158
+    .line 169
     .local v7, "iterator":Ljava/util/Iterator;
     :goto_1
     invoke-interface {v7}, Ljava/util/Iterator;->hasNext()Z
@@ -582,38 +746,38 @@
 
     if-eqz v8, :cond_1
 
-    .line 159
+    .line 170
     invoke-interface {v7}, Ljava/util/Iterator;->next()Ljava/lang/Object;
 
     move-result-object v8
 
-    .line 160
+    .line 171
     .local v8, "providerClientRecord":Ljava/lang/Object;
-    const-string v9, "android.app.ActivityThread$ProviderClientRecord"
+    const-string v13, "android.app.ActivityThread$ProviderClientRecord"
 
-    const-string v13, "mLocalProvider"
+    const-string v14, "mLocalProvider"
 
-    invoke-static {v9, v8, v13}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
+    invoke-static {v13, v8, v14}, Lcom/example/protectappnative/RefInvoke;->getFieldObject(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 
-    move-result-object v9
+    move-result-object v13
 
-    .line 164
-    .local v9, "localProvider":Ljava/lang/Object;
-    const-string v13, "android.content.ContentProvider"
+    .line 175
+    .local v13, "localProvider":Ljava/lang/Object;
+    const-string v14, "android.content.ContentProvider"
 
-    const-string v14, "mContext"
+    const-string v15, "mContext"
 
-    invoke-static {v13, v14, v9, v0}, Lcom/example/protectappnative/RefInvoke;->setFieldObject(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
+    invoke-static {v14, v15, v13, v0}, Lcom/example/protectappnative/RefInvoke;->setFieldObject(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V
 
-    .line 169
+    .line 180
     .end local v8    # "providerClientRecord":Ljava/lang/Object;
-    .end local v9    # "localProvider":Ljava/lang/Object;
+    .end local v13    # "localProvider":Ljava/lang/Object;
     goto :goto_1
 
-    .line 170
+    .line 181
     :cond_1
     invoke-super/range {p0 .. p0}, Landroid/app/Application;->onCreate()V
 
-    .line 171
+    .line 182
     return-void
 .end method

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -136,12 +137,22 @@ public class ProxyApplication extends Application {
          *     ......
          * }
          */
+        /**
+         * 获取ActivityThread中的mInstrumentation
+         * 在反射调用makeApplication时候第二个参数传此处获取的mInstrumentation
+         * 如果第二个参数传递为null，则不会调用Application的onCreate()方法
+         */
+        Object oldInstrumentation = RefInvoke.getFieldObject(
+                "android.app.ActivityThread",
+                currentActivityThread,
+                "mInstrumentation");
+
         Application newApp = (Application)RefInvoke.invokeMethod(
                 "android.app.LoadedApk",
                 "makeApplication",
                 loadedApkInfo,
                 new Class[]{boolean.class, Instrumentation.class},
-                new Object[]{false, null});
+                new Object[]{false, oldInstrumentation});
 
         RefInvoke.setFieldObject(
                 "android.app.ActivityThread",
@@ -180,10 +191,17 @@ public class ProxyApplication extends Application {
             odexPath = this.getDir(".fodex", MODE_PRIVATE).getAbsolutePath();
             cachePath = cache.getAbsolutePath();
             libPath = this.getApplicationInfo().nativeLibraryDir;
-            srcDex = cachePath + "/decrypt.dex";
-            File decFile = FileManager.releaseAssetsFile(this, "encrypt", srcDex, this.getClass().getDeclaredMethod("decMethod", byte[].class));
-            if(!decFile.exists()) {
-                decFile.createNewFile();
+//            srcDex = cachePath + "/decrypt.dex";
+            //assets目录下所有文件列表
+            String[] fileNames = base.getAssets().list("");
+            for (String filename:fileNames) {
+                if (filename.endsWith(".dexencrypt")) {
+                    String decFileName = cachePath + "/" + filename.substring(0, filename.lastIndexOf("encrypt"));
+                    File decFile = FileManager.releaseAssetsFile(this, filename, decFileName, this.getClass().getDeclaredMethod("decMethod", byte[].class));
+                    if(!decFile.exists()) {
+                        decFile.createNewFile();
+                    }
+                }
             }
 
             Object currentActivityThread = RefInvoke.invokeStaticMethod(
@@ -209,7 +227,30 @@ public class ProxyApplication extends Application {
              * mClassLoader定义如下：
              *  private ClassLoader mClassLoader;
              */
-            DexClassLoader dexClassLoader = new DexClassLoader(srcDex, odexPath, libPath,
+//            String p1= cachePath+"/classes.dex";
+//            String p2= cachePath+"/classes2.dex";
+//            String p3= cachePath+"/classes3.dex";
+//            String p4= cachePath+"/classes4.dex";
+//            String dexPath = p1 + ":" + p2 + ":" + p3 + ":" + p4;
+            File filePath = new File(cachePath);
+            File[] dexFiles = filePath.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    if (name.endsWith(".dex")) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            String dexPath = "";
+            for (int i=0; i<dexFiles.length; i++) {
+                dexPath += dexFiles[i].getAbsolutePath();
+                if (i < dexFiles.length -1) {
+                    dexPath += ":";
+                }
+            }
+            Log.i("hello", "dexPath:" + dexPath);
+            DexClassLoader dexClassLoader = new DexClassLoader(dexPath, odexPath, libPath,
                     (ClassLoader) RefInvoke.getFieldObject("android.app.LoadedApk", wr.get(), "mClassLoader"));
 
             RefInvoke.setFieldObject("android.app.LoadedApk", "mClassLoader", wr.get(), dexClassLoader);
